@@ -7,9 +7,11 @@ use App\Entity\Author;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class AuthorType extends AbstractType
 {
@@ -18,6 +20,7 @@ class AuthorType extends AbstractType
         $builder
             ->add('name',TextType::class,[
                 'label' => 'Nom',
+                'required'=>false
             ])
             ->add('dateOfBirth', null, [
                 'input'=>'datetime_immutable',
@@ -31,16 +34,24 @@ class AuthorType extends AbstractType
                 'required'=>false
             ])
             ->add('nationality',TextType::class,[
-                'required'=>false,
                 'label' => 'Nationnalité',
+                'required'=>false,
             ])
 
             ->add('books', EntityType::class, [
                 'class' => Book::class,
                 'choice_label' => 'id',
                 'multiple' => true,
-                'required'=>false,
                 'label' => 'Livre',
+                'required'=>false,
+            ])
+
+            ->add('certification', CheckboxType::class, [
+                'mapped' => false,
+                'label' => "Je certifie l'exactitude des informations fournies",
+                'constraints' => [
+                    new IsTrue(message: "Vous devez cocher la case pour ajouter un auteur."),
+                ],
             ])
         ;
     }
